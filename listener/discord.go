@@ -33,7 +33,7 @@ func ListenToDiscord(config *eqemuconfig.Config, disc *discord.Discord) (err err
 
 func onMessageEvent(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	//Look for messages to be relayed to OOC in game.
+	//Look for messages to be relayed to AUCTIONS in game.
 	if m.ChannelID == config.Discord.ChannelID &&
 		len(m.Message.Content) > 0 &&
 		m.Message.Content[0:1] != "!" {

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/xackery/discordeq/applog"
-	"github.com/xackery/discordeq/discord"
-	"github.com/xackery/discordeq/listener"
+	"github.com/moguay/discordeq/applog"
+	"github.com/moguay/discordeq/discord"
+	"github.com/moguay/discordeq/listener"
 	"github.com/xackery/eqemuconfig"
 )
 
@@ -78,7 +78,7 @@ func startService() {
 		os.Exit(1)
 	}
 	go listenToDiscord(config, &disco)
-	go listenToOOC(config, &disco)
+	go listenToAUCTIONS(config, &disco)
 	select {}
 }
 
@@ -116,10 +116,10 @@ func listenToDiscord(config *eqemuconfig.Config, disco *discord.Discord) (err er
 	}
 }
 
-func listenToOOC(config *eqemuconfig.Config, disco *discord.Discord) (err error) {
+func listenToAUCTIONS(config *eqemuconfig.Config, disco *discord.Discord) (err error) {
 	for {
-		listener.ListenToOOC(config, disco)
-		applog.Info.Println("[OOC] Reconnecting in 5 seconds...")
+		listener.ListenToAUCTIONS(config, disco)
+		applog.Info.Println("[AUCTIONS] Reconnecting in 5 seconds...")
 		time.Sleep(5 * time.Second)
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/xackery/discordeq/discord"
+	"github.com/moguay/discordeq/discord"
 	"github.com/xackery/eqemuconfig"
 	"github.com/ziutek/telnet"
 )
@@ -36,7 +36,7 @@ func GetTelnet() (conn *telnet.Conn) {
 	return
 }
 
-func ListenToOOC(eqconfig *eqemuconfig.Config, disco *discord.Discord) {
+func ListenToAUCTIONS(eqconfig *eqemuconfig.Config, disco *discord.Discord) {
 	var err error
 	config = eqconfig
 	channelID = config.Discord.ChannelID
@@ -143,7 +143,7 @@ func checkForMessages(config *eqemuconfig.Config, t *telnet.Conn, disco *discord
 		if len(message) < 3 { //ignore small messages
 			continue
 		}
-		if !strings.Contains(message, "says auctions,") { //ignore non-ooc
+		if !strings.Contains(message, "says auctions,") { //ignore non-auctions
 			continue
 		}
 		if strings.Index(message, ">") > 0 && strings.Index(message, ">") < strings.Index(message, " ") { //ignore prompts
