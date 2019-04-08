@@ -42,12 +42,12 @@ func ListenToOOC(eqconfig *eqemuconfig.Config, disco *discord.Discord) {
 	channelID = config.Discord.ChannelID
 
 	if err = connectTelnet(config); err != nil {
-		log.Println("[OOC] Warning while getting telnet connection:", err.Error())
+		log.Println("[AUCTIONS] Warning while getting telnet connection:", err.Error())
 		return
 	}
 
 	if err = checkForMessages(config, t, disco); err != nil {
-		log.Println("[OOC] Warning while checking for messages:", err.Error())
+		log.Println("[AUCTIONS] Warning while checking for messages:", err.Error())
 	}
 	t.Close()
 	t = nil
@@ -67,7 +67,7 @@ func connectTelnet(config *eqemuconfig.Config) (err error) {
 		port = config.World.Tcp.Port
 	}
 
-	log.Printf("[OOC] Connecting to %s:%s...\n", ip, port)
+	log.Printf("[AUCTIONS] Connecting to %s:%s...\n", ip, port)
 
 	if t, err = telnet.Dial("tcp", fmt.Sprintf("%s:%s", ip, port)); err != nil {
 		return
@@ -81,7 +81,7 @@ func connectTelnet(config *eqemuconfig.Config) (err error) {
 	}
 	if index != 0 {
 		skipAuth = true
-		log.Println("[OOC] Skipping auth")
+		log.Println("[AUCTIONS] Skipping auth")
 		newTelnet = true
 	}
 
@@ -108,7 +108,7 @@ func connectTelnet(config *eqemuconfig.Config) (err error) {
 
 	t.SetReadDeadline(time.Time{})
 	t.SetWriteDeadline(time.Time{})
-	log.Printf("[OOC] Connected\n")
+	log.Printf("[AUCTIONS] Connected\n")
 	return
 }
 
@@ -139,11 +139,11 @@ func checkForMessages(config *eqemuconfig.Config, t *telnet.Conn, disco *discord
 			return
 		}
 		message = string(data)
-		//log.Printf("[DEBUG OOC] %s", message)
+		//log.Printf("[DEBUG AUCTIONS] %s", message)
 		if len(message) < 3 { //ignore small messages
 			continue
 		}
-		if !strings.Contains(message, "says ooc,") { //ignore non-ooc
+		if !strings.Contains(message, "says auctions,") { //ignore non-ooc
 			continue
 		}
 		if strings.Index(message, ">") > 0 && strings.Index(message, ">") < strings.Index(message, " ") { //ignore prompts
@@ -153,7 +153,7 @@ func checkForMessages(config *eqemuconfig.Config, t *telnet.Conn, disco *discord
 			continue
 		}
 
-		sender := message[0:strings.Index(message, " says ooc,")]
+		sender := message[0:strings.Index(message, " says auctions,")]
 
 		//newTelnet added some odd garbage, this cleans it
 		sender = strings.Replace(sender, ">", "", -1) //remove duplicate prompts
@@ -164,21 +164,21 @@ func checkForMessages(config *eqemuconfig.Config, t *telnet.Conn, disco *discord
 		if newTelnet { //if new telnet, offsetis 2 off.
 			padOffset = 2
 		}
-		message = message[strings.Index(message, "says ooc, '")+11 : len(message)-padOffset]
+		message = message[strings.Index(message, "says auctions, '")+16 : len(message)-padOffset]
 
 		sender = strings.Replace(sender, "_", " ", -1)
 
 		message = convertLinks(config.Discord.ItemUrl, message)
 
-		if _, err = disco.SendMessage(channelID, fmt.Sprintf("**%s OOC**: %s", sender, message)); err != nil {
+		if _, err = disco.SendMessage(channelID, fmt.Sprintf("**%s AUCTIONS**: %s", sender, message)); err != nil {
 			errStr := err.Error()
 			if strings.Contains(err.Error(), "Unauthorized") {
 				errStr = fmt.Sprintf("%s (try visiting: https://discordapp.com/oauth2/authorize?&client_id=%s&scope=bot&permissions=2146958591 to give access)", err.Error(), config.Discord.ClientID)
 			}
-			log.Printf("[OOC] Error sending message (%s: %s) %s", sender, message, errStr)
+			log.Printf("[AUCTIONS] Error sending message (%s: %s) %s", sender, message, errStr)
 			continue
 		}
-		log.Printf("[OOC] %s: %s\n", sender, message)
+		log.Printf("[AUCTIONS] %s: %s\n", sender, message)
 	}
 }
 
