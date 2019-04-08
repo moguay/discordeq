@@ -29,7 +29,8 @@ var (
 )
 
 func init() {
-	StartupNoOp()
+	//StartupNoOp()
+	StartupInteractive()
 }
 
 // StartupNoOp starts up the logging system in a non-operational mode.
