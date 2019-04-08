@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/xackery/discordeq/discord"
+	"github.com/moguay/discordeq/discord"
 	"github.com/xackery/eqemuconfig"
 )
 
